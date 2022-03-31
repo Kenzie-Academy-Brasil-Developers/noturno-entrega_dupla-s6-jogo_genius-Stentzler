@@ -1,4 +1,4 @@
-//Iniciando o Jogo:
+//Pegando nome para iniciar o jogo:
 const jogoContainer = document.getElementById('container')
 let nome
 criandoNomeParaJogar()
@@ -74,7 +74,7 @@ function getButtons(){
 function criaSequenciaDasLuzes() { //aqui pode ser passado um numero maximo de luzes
     sequenciaDasLuzes = []
 
-    for(let i = 0; i < 2; i++) {
+    for(let i = 0; i < 5; i++) {
         let randomNumero = Math.ceil(Math.random() * 4)
 
         sequenciaDasLuzes.push(randomNumero)
@@ -135,8 +135,14 @@ function rodadaDoPCMensagem(){
     <button class="btn azul" id="4" value="4" onclick=""></button>
 
     <div class="jogo-mensagem" id="jogo-mensagem">
-        <h3>Preste Atencao!</h3>
+        <h3 id="muitobem">Muito bem!</h3>
+        <p style="margin-bottom:80px">Preste Atenção Nas Luzes</p>
     </div>`
+
+    if(rodada === 1){
+        let mensagemMuitoBem = document.getElementById('muitobem')
+        mensagemMuitoBem.innerText = "Vamos Começar!!"
+    }
 
     getButtons()
 }
@@ -174,7 +180,7 @@ function rodadaUsuarioMensagem(){
     <button class="btn azul" id="4" value="4" onclick=""></button>
 
     <div class="jogo-mensagem" id="jogo-mensagem">
-        <h3 id='mensagem'>Repita a ordem das cores</h3>
+        <h3 id='mensagem' style="margin-bottom: 40px">Repita a ordem das cores</h3>
     </div>`
 
     getButtons()
@@ -213,7 +219,6 @@ function rodadaUsuario(){
 function check(sequenciaDoUsuario) {
 
     let acertou
-    let mensagem = document.getElementById('mensagem')
 
     for(let i = 0; i < sequenciaDoUsuario.length; i++){
         if (sequenciaDoUsuario[i] == sequenciaDasLuzes[i]){
@@ -224,28 +229,19 @@ function check(sequenciaDoUsuario) {
     }
 
     if (acertou === false) {
-        mensagem.innerText = 'Voce ainda eh burro'
         perdeu()
     }    
-
-    if (rodada === sequenciaDasLuzes.length){
-        let div = document.getElementById('jogo-mensagem')
-        div.innerHTML = `
-        <h3>Parabéns! Você Venceu</h3>
-        <p>Pontuacao: <small>${maiorPontuacao}</small> pontos</p>
-        `
+    if (rodada === sequenciaDasLuzes.length){       
         acertou = false
         setTimeout(venceu(nome), 2000)
     }
-    if(acertou && rodada < sequenciaDasLuzes.length) {
+    if(acertou === true) {
         rodada += 1
 
         maiorPontuacao = rodada
-       
-        mensagem.innerText = 'Muito Bem! Acertou'
-        
+
         sequenciaDoUsuario = []
-        rodadaDoPC()
+        rodadaDoPC()    
     } 
 }
 
@@ -261,9 +257,9 @@ function venceu() {
     <button class="btn azul" id="4" value="4" onclick=""></button>
 
     <div class="jogo-mensagem" id="jogo-mensagem">
-        <h3>Voce Venceu!!</h3>
+        <h3>Você Venceu!!</h3>
         <p>Será que foi sorte?</p>
-        <p>Maior pontuacao: <small>${maiorPontuacao}</small> pontos</p>
+        <p>Maior pontuação: <small>${maiorPontuacao}</small> pontos</p>
         <button class="iniciar-btn" id="iniciar" onclick="rodadaDoPC()">Jogar Novamente</button>
     </div>`
 
