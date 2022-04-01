@@ -4,7 +4,6 @@ let nome
 criandoNomeParaJogar()
 
 
-
 function criandoNomeParaJogar(){
     jogoContainer.innerHTML = ""
 
@@ -71,12 +70,12 @@ function getButtons(){
     btnIniciar = document.getElementById('iniciar')
 }
 
-function criaSequenciaDasLuzes() { //aqui pode ser passado um numero maximo de luzes
+function criaSequenciaDasLuzes() { //aqui pode ser alterado o numero de rodadas
     sequenciaDasLuzes = []
+    numeroDeRodadas = 5
 
-    for(let i = 0; i < 5; i++) {
+    for(let i = 0; i < numeroDeRodadas; i++) {
         let randomNumero = Math.ceil(Math.random() * 4)
-
         sequenciaDasLuzes.push(randomNumero)
     }
 }
@@ -100,25 +99,25 @@ function azulFlash(){
 function piscaBotao(valorDeUmAQuatro){
     if(valorDeUmAQuatro == 1){
         btnVerde.style.backgroundColor = 'rgb(48, 236, 48)'
-        const verdeFlashStoper = () => {setTimeout(verdeFlash, 400)}
+        const verdeFlashStoper = () => {setTimeout(verdeFlash, 300)}
         verdeFlashStoper()
         clearTimeout(verdeFlashStoper)
     } 
     if(valorDeUmAQuatro == 2){
         btnAmarelo.style.backgroundColor = 'rgb(250, 250, 35)'
-        const amareloFlashStoper = () => {setTimeout(amareloFlash, 400)}
+        const amareloFlashStoper = () => {setTimeout(amareloFlash, 300)}
         amareloFlashStoper()
         clearTimeout(amareloFlashStoper)
     } 
     if(valorDeUmAQuatro == 3){
         btnVermelho.style.backgroundColor = 'rgb(230, 27, 27)'
-        const vermelhoFlashStoper = () => {setTimeout(vermelhoFlash, 400)}
+        const vermelhoFlashStoper = () => {setTimeout(vermelhoFlash, 300)}
         vermelhoFlashStoper()
         clearTimeout(vermelhoFlashStoper)
     } 
     if(valorDeUmAQuatro == 4){
-        btnAzul.style.backgroundColor = 'rgb(42, 63, 252)'
-        const azulFlashStoper = () => {setTimeout(azulFlash, 400)}
+        btnAzul.style.backgroundColor = 'rgb(99, 81, 252)'
+        const azulFlashStoper = () => {setTimeout(azulFlash, 300)}
         azulFlashStoper()
         clearTimeout(azulFlashStoper)
     }
@@ -161,13 +160,15 @@ function rodadaDoPC(){
         piscaBotao(sequencia[counter])
 
         if(counter == rodada){
-            clearInterval(teste)
+            clearInterval(fazPiscarOBotao)
             rodadaUsuario()
         }
         counter++
     }
 
-    let teste = setInterval((piscaUmBotao),800)
+    //chama a funcao a cima num intervalo de 800ms
+    //Coloquei dentro de uma variavel porque pelo que entendi soh assim eu posso chamar o clearIterval(nomeDaVariavel)
+    let fazPiscarOBotao = setInterval((piscaUmBotao),800)
 }
 //-----------------------------------------------
 function rodadaUsuarioMensagem(){
@@ -187,10 +188,15 @@ function rodadaUsuarioMensagem(){
 }
 
 function rodadaUsuario(){
-    esperandoCondicao()
-    rodadaUsuarioMensagem()
     sequenciaDoUsuario = []
 
+    rodadaUsuarioMensagem()
+    esperandoCondicao()
+    addEventToButton()
+}
+
+function addEventToButton(){
+    // style adicionado aqui para o cursor aparecer somente na rodada do usuario
     btnVerde.style.cursor = 'pointer'
     btnVermelho.style.cursor = 'pointer'
     btnAmarelo.style.cursor = 'pointer'
@@ -212,21 +218,23 @@ function rodadaUsuario(){
         piscaBotao(e.target.value)
         sequenciaDoUsuario.push(e.target.value)
     })
-
-    esperandoCondicao()
 }
 
 function check(sequenciaDoUsuario) {
-
     let acertou
 
-    for(let i = 0; i < sequenciaDoUsuario.length; i++){
-        if (sequenciaDoUsuario[i] == sequenciaDasLuzes[i]){
+    sequenciaDoUsuario.forEach((elem, index) => {
+        if(elem == sequenciaDasLuzes[index]){
             acertou = true
         } else {
             acertou = false
         }
-    }
+    })
+
+    checkAcertou(acertou)
+}
+
+function checkAcertou(acertou){
 
     if (acertou === false) {
         perdeu()
@@ -245,6 +253,7 @@ function check(sequenciaDoUsuario) {
     } 
 }
 
+
 function venceu() { 
     jogoContainer.innerHTML = ""
     sequenciaDoUsuario = []
@@ -258,13 +267,12 @@ function venceu() {
 
     <div class="jogo-mensagem" id="jogo-mensagem">
         <h3>Você Venceu!!</h3>
-        <p>Será que foi sorte?</p>
+        <p>Parabens <strong>${nome}</strong>!!!!</p>
         <p>Maior pontuação: <small>${maiorPontuacao}</small> pontos</p>
         <button class="iniciar-btn" id="iniciar" onclick="rodadaDoPC()">Jogar Novamente</button>
     </div>`
 
     criaSequenciaDasLuzes()
-    getButtons()
 }
 
 function perdeu(){
@@ -286,12 +294,11 @@ function perdeu(){
     </div>`
 
     criaSequenciaDasLuzes()
-    getButtons()
 }
 
 function esperandoCondicao() {
     if(sequenciaDoUsuario.length < rodada) {
-       window.setTimeout(esperandoCondicao, 2000) /// mudar aqui para menos
+       window.setTimeout(esperandoCondicao, 1000)
     } else {
       check(sequenciaDoUsuario)
     }
